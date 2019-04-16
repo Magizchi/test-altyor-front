@@ -1,0 +1,7 @@
+export default {
+	ADD_TAB: 'ADD_TAB',
+	MAJ_TAB: 'MAJ_TAB',
+	UPDATE_TAB: 'UPDATE_TAB',
+	UPDATE_ROW: 'UPDATE_ROW',
+	DELETE_ROW: 'DELETE_ROW'
+};
