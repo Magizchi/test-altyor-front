@@ -6,68 +6,56 @@ import axios from 'axios';
 import { connect } from 'react-redux';
 import constant from '../../constants/constants';
 class Basic extends React.Component {
+	state = {
+		errorMessage: null
+	};
 	render() {
-		let newNom = '';
-		let newPrix = '';
-		let newCapacite = '';
-		let newTaille = '';
-		let newDescription = '';
-		let id = '';
-		let idArray = '';
-
-		if (this.props.row) {
-			const { nom, prix, capacite, taille, description, _id, idRow } = this.props.row;
-			newNom = nom;
-			newPrix = prix;
-			newCapacite = capacite;
-			newTaille = taille;
-			newDescription = description;
-			id = _id;
-			idArray = idRow;
-		}
-
 		return (
 			<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', flexDirection: 'column' }}>
 				{this.props.update === false ? <h2>Create a Memory</h2> : <h2>Update a Memory</h2>}
+				{this.state.errorMessage}
 				<Formik
-					initialValues={{
-						nom: '',
-						prix: '',
-						capacite: '',
-						taille: '',
-						description: ''
-					}}
+					enableReinitialize={true}
+					initialValues={this.props.row}
 					onSubmit={async (values, actions) => {
 						// Ajout d'une nouvelle carte dans la base de données
 						if (this.props.update === false) {
-							const response = await axios.post('http://localhost:3600/create', {
-								nom: values.nom,
-								prix: values.prix,
-								capacite: values.capacite,
-								taille: values.taille,
-								description: values.description
-							});
-							this.props.addedTab(response.data.newCarte);
+							try {
+								const response = await axios.post('http://localhost:3600/create', {
+									nom: values.nom,
+									prix: values.prix,
+									capacite: values.capacite,
+									taille: values.taille,
+									description: values.description
+								});
+								this.props.addedTab(response.data.newCarte);
+							} catch (error) {
+								this.setState({ errorMessage: error.response.data.error });
+							}
 						} else if (this.props.update === true) {
 							//Modification d'une carte de la base de données
-							const response = await axios.post(
-								'http://localhost:3600/update',
-								{
-									nom: values.nom || newNom,
-									prix: values.prix || newPrix,
-									capacite: values.capacite || newCapacite,
-									taille: values.taille || newTaille,
-									description: values.description || newDescription,
-									id: id
-								},
-								//remise a null des inputs
-								(values.nom = ''),
-								(values.prix = ''),
-								(values.capacite = ''),
-								(values.taille = ''),
-								(values.description = '')
-							);
-							this.props.updateRow(response.data.updateCarte);
+							try {
+								const response = await axios.post(
+									'http://localhost:3600/update',
+									{
+										nom: values.nom,
+										prix: values.prix,
+										capacite: values.capacite,
+										taille: values.taille,
+										description: values.description,
+										id: values.id
+									},
+									//remise a null des inputs
+									(values.nom = ''),
+									(values.prix = ''),
+									(values.capacite = ''),
+									(values.taille = ''),
+									(values.description = '')
+								);
+								this.props.updateRow(response.data.updateCarte);
+							} catch (error) {
+								this.setState({ errorMessage: error.response.data.error });
+							}
 						}
 					}}
 					render={(props) => (
@@ -87,7 +75,7 @@ class Basic extends React.Component {
 								className=""
 								onChange={props.handleChange}
 								onBlur={props.handleBlur}
-								value={props.values.nom || newNom}
+								value={props.values.nom}
 								name="nom"
 								margin="normal"
 								variant="outlined"
@@ -99,7 +87,7 @@ class Basic extends React.Component {
 								type="text"
 								onChange={props.handleChange}
 								onBlur={props.handleBlur}
-								value={props.values.prix || newPrix}
+								value={props.values.prix}
 								name="prix"
 								margin="normal"
 								variant="outlined"
@@ -111,7 +99,7 @@ class Basic extends React.Component {
 								type="text"
 								onChange={props.handleChange}
 								onBlur={props.handleBlur}
-								value={props.values.capacite || newCapacite}
+								value={props.values.capacite}
 								name="capacite"
 								margin="normal"
 								variant="outlined"
@@ -123,7 +111,7 @@ class Basic extends React.Component {
 								type="text"
 								onChange={props.handleChange}
 								onBlur={props.handleBlur}
-								value={props.values.taille || newTaille}
+								value={props.values.taille}
 								name="taille"
 								margin="normal"
 								variant="outlined"
@@ -135,7 +123,7 @@ class Basic extends React.Component {
 								type="text"
 								onChange={props.handleChange}
 								onBlur={props.handleBlur}
-								value={props.values.description || newDescription}
+								value={props.values.description}
 								name="description"
 								margin="normal"
 								variant="outlined"
