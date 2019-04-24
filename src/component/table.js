@@ -38,12 +38,13 @@ const CustomTableCell = withStyles(() => ({
 // });
 
 class CustomizedTable extends React.Component {
+	//Requete à la bdd
 	componentDidMount = async () => {
 		const response = await axios.get('http://localhost:3600/');
 		this.props.majList(response.data);
 	};
 	//Modification
-	updateTab = (index, row, idRow) => {
+	updateTab = (index, row) => {
 		this.props.updateTab(row, index);
 	};
 	//Suppression
@@ -53,6 +54,26 @@ class CustomizedTable extends React.Component {
 		});
 		this.props.deleteRow(index);
 	};
+	columnSort = (column) => {
+		this.props.columnSort(column);
+	};
+
+	// DESC = (a, b, column) => {
+	// 	a = a[1];
+	// 	b = b[1];
+	// 	if (a > b) return -1;
+	// 	if (a < b) return 1;
+	// 	return 0;
+	// };
+
+	// ASC = (a, b) => {
+	// 	a = a[1];
+	// 	b = b[1];
+	// 	if (a > b) {
+	// 		return 0;
+	// 	}
+	// };
+
 	render() {
 		if (this.props.isLoading === true) {
 			return 'Is Loading';
@@ -62,10 +83,7 @@ class CustomizedTable extends React.Component {
 				idRow += 0;
 				return { nom, prix, capacite, taille, description, _id, idRow };
 			};
-			const rows = [
-				// createData('Frozen yoghurt', 159, 6.0, 24, 4.0),
-			];
-
+			const rows = [];
 			this.props.cartes.map((carte) => {
 				if (carte !== undefined) {
 					return rows.push(
@@ -78,10 +96,16 @@ class CustomizedTable extends React.Component {
 					<Table className="">
 						<TableHead>
 							<TableRow>
-								<CustomTableCell>Nom</CustomTableCell>
-								<CustomTableCell align="right">Prix (EUR)</CustomTableCell>
-								<CustomTableCell align="right">Capacité (Go)</CustomTableCell>
-								<CustomTableCell align="right">Taille (mm)</CustomTableCell>
+								<CustomTableCell onClick={() => this.columnSort('nom')}>Nom</CustomTableCell>
+								<CustomTableCell onClick={() => this.columnSort('prix')} align="right">
+									Prix (EUR)
+								</CustomTableCell>
+								<CustomTableCell onClick={() => this.columnSort('capacite')} align="right">
+									Capacité (Go)
+								</CustomTableCell>
+								<CustomTableCell onClick={() => this.columnSort('taille')} align="right">
+									Taille (mm)
+								</CustomTableCell>
 								<CustomTableCell align="right">Désciption</CustomTableCell>
 								<CustomTableCell align="right">Option</CustomTableCell>
 							</TableRow>
@@ -92,13 +116,7 @@ class CustomizedTable extends React.Component {
 									<CustomTableCell component="th" scope="row">
 										{row.nom}
 									</CustomTableCell>
-									{/* <CustomTableCell align="right">{row.nom}</CustomTableCell> */}
-									<CustomTableCell align="right">
-										{/* Test */}
-										{/* <InputBase className="" defaultValue={row.prix} /> */}
-										{/* fin Test */}
-										{row.prix}
-									</CustomTableCell>
+									<CustomTableCell align="right">{row.prix}</CustomTableCell>
 									<CustomTableCell align="right">{row.capacite}</CustomTableCell>
 									<CustomTableCell align="right">{row.taille}</CustomTableCell>
 									<CustomTableCell align="right">{row.description}</CustomTableCell>
@@ -146,6 +164,10 @@ const mapDispatchToProps = (dispatch) => {
 		},
 		deleteRow: (index) => {
 			const action = { type: constants.DELETE_ROW, index: index };
+			dispatch(action);
+		},
+		columnSort: (column) => {
+			const action = { type: constants.SORT, column: column };
 			dispatch(action);
 		}
 	};

@@ -3,7 +3,6 @@ import constants from '../constants/constants';
 const initialState = {
 	cartes: [],
 	isLoading: true,
-
 	row: {
 		nom: '',
 		prix: '',
@@ -14,12 +13,12 @@ const initialState = {
 		idArray: ''
 	},
 	update: false,
-	idRow: ''
+	idRow: '',
+	//Tier
+	trier: true
 };
 
 const reducer = (state = initialState, action) => {
-	console.log(state.cartes);
-
 	switch (action.type) {
 		case constants.MAJ_TAB:
 			return {
@@ -64,6 +63,35 @@ const reducer = (state = initialState, action) => {
 			return {
 				...state,
 				cartes: temp2Cartes
+			};
+		case constants.SORT:
+			const column = action.column;
+			const tab = state.cartes.slice();
+			if (state.trier === true) {
+				if (column === 'nom') {
+					tab.sort((a, b) => a.nom.localeCompare(b.nom, 'es', { sensitivity: 'base' }));
+					state.trier = false;
+				} else {
+					tab.sort((a, b) => {
+						state.trier = false;
+						return a[column] - b[column];
+					});
+				}
+			} else if (state.trier === false) {
+				if (column === 'nom') {
+					tab.sort((a, b) => b.nom.localeCompare(a.nom, 'es', { sensitivity: 'base' }));
+					state.trier = true;
+				} else {
+					tab.sort((a, b) => {
+						state.trier = true;
+						return b[column] - a[column];
+					});
+				}
+			}
+			return {
+				...state,
+				cartes: tab,
+				tier: state.trier
 			};
 		default:
 			return state;
