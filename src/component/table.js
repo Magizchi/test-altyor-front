@@ -49,7 +49,7 @@ class CustomizedTable extends React.Component {
 	};
 	//Suppression
 	deleteRow = async (row, index) => {
-		await axios.post('https://altyor.herokuapp.com/delete' || 'http://localhost:3600/delete', {
+		await axios.post('https://altyor-serveur.herokuapp.com/delete' || 'http://localhost:3600/delete', {
 			id: row._id
 		});
 		this.props.deleteRow(index);
