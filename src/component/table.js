@@ -40,7 +40,7 @@ const CustomTableCell = withStyles(() => ({
 class CustomizedTable extends React.Component {
 	//Requete à la bdd
 	componentDidMount = async () => {
-		const response = await axios.get('http://localhost:3600/');
+		const response = await axios.get('https://altyor-serveur.herokuapp.com/' || 'http://localhost:3600/');
 		this.props.majList(response.data);
 	};
 	//Modification
@@ -49,7 +49,7 @@ class CustomizedTable extends React.Component {
 	};
 	//Suppression
 	deleteRow = async (row, index) => {
-		await axios.post('http://localhost:3600/delete', {
+		await axios.post('https://altyor.herokuapp.com/delete' || 'http://localhost:3600/delete', {
 			id: row._id
 		});
 		this.props.deleteRow(index);
@@ -57,23 +57,6 @@ class CustomizedTable extends React.Component {
 	columnSort = (column) => {
 		this.props.columnSort(column);
 	};
-
-	// DESC = (a, b, column) => {
-	// 	a = a[1];
-	// 	b = b[1];
-	// 	if (a > b) return -1;
-	// 	if (a < b) return 1;
-	// 	return 0;
-	// };
-
-	// ASC = (a, b) => {
-	// 	a = a[1];
-	// 	b = b[1];
-	// 	if (a > b) {
-	// 		return 0;
-	// 	}
-	// };
-
 	render() {
 		if (this.props.isLoading === true) {
 			return 'Is Loading';

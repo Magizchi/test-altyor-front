@@ -21,7 +21,7 @@ class Basic extends React.Component {
 						// Ajout d'une nouvelle carte dans la base de données
 						if (this.props.update === false) {
 							try {
-								const response = await axios.post('http://localhost:3600/create', {
+								const response = await axios.post('https://altyor-serveur.herokuapp.com/create', {
 									nom: values.nom,
 									prix: values.prix,
 									capacite: values.capacite,
@@ -36,7 +36,7 @@ class Basic extends React.Component {
 							//Modification d'une carte de la base de données
 							try {
 								const response = await axios.post(
-									'http://localhost:3600/update',
+									'https://altyor-serveur.herokuapp.com/update' || 'http://localhost:3600/update',
 									{
 										nom: values.nom,
 										prix: values.prix,
