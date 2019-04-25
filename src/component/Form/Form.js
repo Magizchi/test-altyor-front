@@ -20,10 +20,12 @@ class Basic extends React.Component {
 					onSubmit={async (values, actions) => {
 						// Ajout d'une nouvelle carte dans la base de données
 						if (this.props.update === false) {
-							const chiffreRegex = /[0-9]\.?[0-9]/;
+							const chiffreRegex = /[0-9]/;
 							const lettreRegex = /^[a-zA-Z-]+$/;
 							try {
 								console.log(chiffreRegex.test(values.prix));
+								console.log(chiffreRegex.test(values.capacite));
+								console.log(chiffreRegex.test(values.taille));
 								console.log(lettreRegex.test(values.nom));
 
 								if (
