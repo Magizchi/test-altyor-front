@@ -20,15 +20,36 @@ class Basic extends React.Component {
 					onSubmit={async (values, actions) => {
 						// Ajout d'une nouvelle carte dans la base de données
 						if (this.props.update === false) {
+							const chiffreRegex = /[0-9]*\.?[0-9]*/;
+							const lettreRegex = /^[a-zA-Z-]+$/;
 							try {
-								const response = await axios.post('https://altyor-serveur.herokuapp.com/create', {
-									nom: values.nom,
-									prix: values.prix,
-									capacite: values.capacite,
-									taille: values.taille,
-									description: values.description
-								});
-								this.props.addedTab(response.data.newCarte);
+								if (
+									chiffreRegex.test(values.prix) &&
+									chiffreRegex.test(values.capacite) &&
+									chiffreRegex.test(values.taille) &&
+									lettreRegex.test(values.nom)
+								) {
+									const response = await axios.post(
+										'https://altyor-serveur.herokuapp.com/create' || 'http://localhost:3600/create',
+										{
+											nom: values.nom,
+											prix: values.prix,
+											capacite: values.capacite,
+											taille: values.taille,
+											description: values.description
+										},
+										//remise a null des inputs
+										(values.nom = ''),
+										(values.prix = ''),
+										(values.capacite = ''),
+										(values.taille = ''),
+										(values.description = '')
+									);
+									this.props.addedTab(response.data.newCarte);
+									this.setState({ errorMessage: '' });
+								} else {
+									this.setState({ errorMessage: 'Les valeurs rentrés ne sont pas reconnue' });
+								}
 							} catch (error) {
 								this.setState({ errorMessage: error.response.data.error });
 							}
